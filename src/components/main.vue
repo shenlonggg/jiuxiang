@@ -4,7 +4,7 @@
            <div class="operation">
             <span><input type="text" class="form-control" placeholder="search" v-model="search"></span>
             <!--<button class="btn btn-primary" >查询</button>-->
-            <button class="btn btn-primary">新增</button>
+            <button class="btn btn-primary">新增22222</button>
            </div>
            <div class="operation_list">
             <table class="table table_border table-hover">
