@@ -2,9 +2,9 @@
   <section>
          <div class="main_all">
            <div class="operation">
-            <span><input type="text" class="form-control" placeholder="search" v-model="search"></span>
-            <!--<button class="btn btn-primary" >查询</button>-->
-            <button class="btn btn-primary">新增</button>
+            <span><input type="text" class="form-control" placeholder="search" v-model="searchIndex"></span>
+            <button class="btn btn-primary" @click="searchUp" >查询</button>
+            <button class="btn btn-primary" >新增</button>
            </div>
            <div class="operation_list">
             <table class="table table_border table-hover">
@@ -18,13 +18,13 @@
                 </td><td width="50">#</td><td width="120">姓名</td><td width="100">性别</td><td width="100">年龄</td><td width="120">生日</td><td min-width="120">地址</td><td width="150">操作</td></tr>
               </thead>
               <tbody>
-                <tr v-for="(listy,index) in searchData" v-model="listlenth">
+                <tr v-for="(listy,index) in list">
                   <td>
                   <div class="checkbox checkbox-primary"> 
                       <input :id="index" class="styled" :value="index" v-model="selectArr" type="checkbox" checkbox=""><label :for="index"></label>
                   </div>
                           </td>
-                          <td>{{index+1}}</td>
+                          <td><span>{{(num-1) * pageNum + (index+1)}}</span></td>
                           <td>{{listy.name}}</td>
                           <td>
                           <span>{{listy.sex}}</span>
@@ -46,15 +46,15 @@
              <nav aria-label="Page navigation">
             <ul class="pagination">
                 <li>
-                  <a href="#" aria-label="Previous">
+                  <a href="#" aria-label="Previous" v-if="num>1" @click="num=1,pageClick()">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
                 </li>
                 <li v-if="listleft"><a class="ellipsis">...</a></li>
-                <li v-for="(list,index) in numpage" :class="index?'':'active'"><a href="#">{{index+1}}</a></li>
+                <li v-for="(list,index) in page" :class="(index+1)==num?'active':''" @click="num=index+1,pageClick(index)"><a href="#">{{list}}</a></li>
                 <li v-if="listright"><a class="ellipsis">...</a></li>
                 <li>
-                  <a href="#" aria-label="Next">
+                  <a href="#" aria-label="Next" v-if="num!=page" @click="num++,pageClick()">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
                 </li>
@@ -77,15 +77,31 @@ export default {
       selectArr:[],
       mainshow:false,
       disabled:true,
-      numpage:[],
+      searchIndex:'',
+      page:[],
+      num:1,
+      pageNum:4,
+      searchData:[],
       listleft:false,
       listright:false,
-      listlenth:'',
+      searchIndex:'',
+      list:[]
     }
+  },
+  mounted(){
+    var _this = this;
+    this.searchData = this.users;
+    _this.list = _this.searchData.filter(function(data,index) {
+         if(index>=(_this.num-1)*_this.pageNum&&index<_this.pageNum*_this.num){
+             return data;
+         }
+    });
+    _this.page =Math.ceil(this.searchData.length/this.pageNum);
   },
   methods:{
        checkedAll:function(event){
           var _this = this;
+          this.selectArr = [];
         if (!event.currentTarget.checked) {
           this.selectArr = [];
         } else { 
@@ -105,9 +121,27 @@ export default {
             }
           }
           this.users = arr;
-          this.selectArr = []
+          this.selectArr = [];
         },
-
+        pageClick:function(index){
+           var _this = this;
+           if(index!=this.num){
+              _this.list = _this.searchData.filter(function(data,index){
+                if((parseInt(index/_this.pageNum)+1) == _this.num){
+                  return data;
+                }
+              })
+            }
+        },
+        searchUp:function(){
+           var _this = this;
+           _this.list = _this.searchData.filter(function(data,index) {
+              if(data.name.indexOf(_this.searchIndex)!==-1){
+                  return data;
+              }
+          });
+          _this.page =Math.ceil(_this.list.length/this.pageNum);
+        }
      },
      watch:{
           selectArr(e){
@@ -123,25 +157,11 @@ export default {
             if(e.length==0){
                 this.disabled = true
             }
-          },
-          listlenth(e){
-            alert(1)
-          }    
+          }
+          
      },
      computed: {
-        searchData: function() {
-          var search = this.search;
-
-          if(search){
-              return this.users.filter(function(users) {
-              return Object.keys(users).some(function(key) {
-                return String(users[key]).toLowerCase().indexOf(search) > -1;
-              })
-            })
-          }
-        return this.users
-        },
-
+          
      }
 }
 
