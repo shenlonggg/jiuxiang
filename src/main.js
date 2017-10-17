@@ -7,9 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import $ from 'jquery'
 import('./assets/css/input.css')
+import VueResource from 'vue-resource'
 
 Vue.config.productionTip = false
-
+Vue.use(VueResource)
 Vue.prototype.$goRoute = function(index){
 	this.$router.push(index)
 }

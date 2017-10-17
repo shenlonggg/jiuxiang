@@ -54,7 +54,7 @@
 </script>
 
 <style lang="scss" scoped>
-.login_bg{width:100%; height:100%; background:url('../../assets/homescreen.jpeg');position:fixed;}
+.login_bg{width:100%; height:100%; background:url('../../assets/img/homescreen.jpeg');position:fixed;}
 
 .form-signin {box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02); -webkit-border-radius: 5px; border-radius: 5px;-moz-border-radius: 5px;background-clip: padding-box;margin: 180px auto;width: 450px; padding: 20px 55px 25px 55px; background: #fff; border: 1px solid #eaeaea; box-shadow: 0 0 25px #cac6c6;}
 .form-signin .form-signin-heading,.form-signin .checkbox {margin-bottom: 10px;}
