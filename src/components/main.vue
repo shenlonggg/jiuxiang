@@ -70,9 +70,52 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">模态框（Modal）1标题</h4>
+                <h4 class="modal-title" id="myModalLabel">新增个人信息</h4>
             </div>
-            <div class="modal-body">在这里添加一些文本</div>
+              
+            <form class="modal-body">
+                <div class="form-group">
+                  <label class="col-sm-2"><span>*</span>姓名</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="name">
+                  </div>
+                </div>
+                <div class="form-group group-top">
+                  <label class="col-sm-2 control-label">性别</label>
+                  <div class="col-sm-10">
+                    <div class="radio radio-primary">
+                          <input id="radio"  type="radio" name="radi_sex">
+                          <label for="radio">男</label>
+                    </div>
+                    <div class="radio radio-primary">
+                          <input id="radio1"  type="radio" name="radi_sex">
+                          <label for="radio1">女</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group group-top">
+                  <label class="col-sm-2 control-label">年龄</label> 
+                  <div class="col-sm-10 age_style">
+                    <input type="text" class="inputnum" ref="mouseOver" placeholder="0">
+                    <span class="increase"  @mouseover="mouseNum">-</span>
+                    <span class="reduce"  @mouseover="mouseNum">+</span>
+                  </div>
+                </div>
+                <div class="form-group group-top">
+                  <label class="col-sm-2 control-label">生日</label>
+                  <div class="col-sm-10">
+                    <input type="date">
+                  </div>
+                </div>
+                <div class="form-group group-top">
+                  <label class="col-sm-2 control-label">地址</label>
+                  <div class="col-sm-10">
+                     <textarea class="form-control" rows="3"></textarea>
+                  </div>
+                </div>
+                <div style="clear:both"></div>
+            </form>
+            
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary">提交更改</button>
@@ -83,12 +126,12 @@
 
 
 <!-- 编辑 -->
-<div class="modal fade" id="Edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="Edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">模态框（Modal）2标题</h4>
+                <h4 class="modal-title" id="myModalLabel1">编辑信息22</h4>
             </div>
             <div class="modal-body">在这里添加一些文本</div>
             <div class="modal-footer">
@@ -122,6 +165,7 @@ export default {
       searchIndex:'',
       list:[],
       bang:[],
+      mouseOver:false
     }
   },
   mounted(){
@@ -207,6 +251,9 @@ export default {
         },
         Edit:function(index){
             console.log(this.list[index].name)
+        },
+        mouseNum:function(){
+          this.$refs.mouseOver.focus();
         }
      },
      watch:{
@@ -247,6 +294,7 @@ var npmlist = [];
 </script>
 
 <style scoped>
+.label{margin:0;}
 .main_all p{width: 100%; margin:0; line-height: 25px; display: inline-block}
 
 .table_border{border:1px solid #ddd;}
@@ -270,6 +318,33 @@ var npmlist = [];
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn{cursor: not-allowed;filter: alpha(opacity=65);-webkit-box-shadow: none; box-shadow: none;opacity: .55; background: #aaa; border: #999 1px solid}
 
+.form-group{min-height: 34px;}
+.form-group label{line-height: 34px; text-align: right;}
+.form-group label span{color: red;}
+
+
+.radio-primary{float: left; height: 34px; line-height: 34px; }
+.radio{margin:0 20px 0 0!important;}
+.radio label{padding-left: 1px;}
+.radio label::before{margin-top:8px;}
+.radio label::after{margin-top:8px;}
+.selected_yes:focus{}
+.age_style{width: 200px;height: 34px; position: relative;}
+.age_style input.inputnum{
+  width: 200px; height: 34px;font-size: 14px;line-height: 1.42857143; color: #555;background-color: #fff; background-image: none; border: 1px solid #ccc;border-radius: 4px; -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075); box-shadow: inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s; transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s; padding-left: 12px;  padding-right: 70px; overflow: hidden;
+}
+.age_style input.inputnum:focus{
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.age_style span{height: auto;border-left: 1px solid #ccc; width: 36px;line-height: 32px;top: 1px;text-align: center;color: #97a8be;cursor: pointer;z-index: 1; display: inline-block; font-size:24px;}
+.age_style span.increase{position: absolute; top:1px; right: 35px;}
+.age_style span.reduce{position: absolute; top:1px; right: 0px;}
+
+.col-sm-10{padding-left: 0px;}
+textarea{resize:none}
 </style>
 
 
