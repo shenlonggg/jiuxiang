@@ -69,26 +69,26 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="myModalLabel">新增个人信息</h4>
             </div>
               
-            <form class="modal-body">
+            <form class="modal-body" @submit.prevent="submit">
                 <div class="form-group">
-                  <label class="col-sm-2"><span>*</span>姓名</label>
+                  <label class="col-sm-2"><em>*</em><span>姓名</span></label>
                   <div class="col-sm-10">
-                    <input type="password" class="form-control" id="inputPassword" placeholder="name">
+                    <input type="text" v-model="user.name" class="form-control" id="inputPassword" placeholder="name">
                   </div>
                 </div>
                 <div class="form-group group-top">
                   <label class="col-sm-2 control-label">性别</label>
                   <div class="col-sm-10">
                     <div class="radio radio-primary">
-                          <input id="radio"  type="radio" name="radi_sex">
+                          <input id="radio"  type="radio" name="radi_sex" value="0" v-model="user.sex">
                           <label for="radio">男</label>
                     </div>
                     <div class="radio radio-primary">
-                          <input id="radio1"  type="radio" name="radi_sex">
+                          <input id="radio1"  type="radio" name="radi_sex" value="1" v-model="user.sex">
                           <label for="radio1">女</label>
                     </div>
                   </div>
@@ -96,30 +96,32 @@
                 <div class="form-group group-top">
                   <label class="col-sm-2 control-label">年龄</label> 
                   <div class="col-sm-10 age_style">
-                    <input type="text" class="inputnum" ref="mouseOver" placeholder="0">
-                    <span class="increase"  @mouseover="mouseNum">-</span>
-                    <span class="reduce"  @mouseover="mouseNum">+</span>
+                    <input type="text" class="inputnum" ref="mouseOver" v-model="user.age" placeholder="0">
+                    <span class="increase"  @mouseover="mouseNum" @click="increase()">-</span>
+                    <span class="reduce"  @mouseover="mouseNum" @click="reduce()">+</span>
                   </div>
                 </div>
                 <div class="form-group group-top">
                   <label class="col-sm-2 control-label">生日</label>
                   <div class="col-sm-10">
-                    <input type="date">
+                    <el-date-picker v-model="user.date" type="date" placeholder="生日"></el-date-picker>
                   </div>
                 </div>
                 <div class="form-group group-top">
                   <label class="col-sm-2 control-label">地址</label>
                   <div class="col-sm-10">
-                     <textarea class="form-control" rows="3"></textarea>
+                     <textarea class="form-control" v-model="user.add" rows="3"></textarea>
                   </div>
+                  <div style="clear:both"></div>
                 </div>
                 <div style="clear:both"></div>
-            </form>
+            
             
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary">提交更改</button>
+                <input class="btn btn-primary" type="submit">
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -165,9 +167,18 @@ export default {
       searchIndex:'',
       list:[],
       bang:[],
-      mouseOver:false
+      mouseOver:false,
+      value1: '',
+      user:{
+          name:'',
+          sex:'',
+          age:'',
+          date:'',
+          add:''
+      }
     }
   },
+/*
   mounted(){
        var _this = this;
         this.$http.get("/static/demo.json").then(function(res){ 
@@ -184,6 +195,24 @@ export default {
         })
         
   },
+*/
+  mounted(){
+       var url = this.HOST + '/test';
+       var _this = this;
+       this.$http.get(url).then(res=>{
+                  this.users = res.data.users;
+                  this.searchData = this.users;
+                  _this.list = _this.searchData.filter(function(data,index) {
+                       if(index>=(_this.num-1)*_this.pageNum&&index<_this.pageNum*_this.num){
+                           return data;
+                       }
+                  });
+           _this.page =Math.ceil(this.searchData.length/this.pageNum);
+       },res=>{
+           alert("获取数据失败")
+       })
+  },
+
   methods:{
        checkedAll:function(event){
           var _this = this;
@@ -221,7 +250,8 @@ export default {
             }
         },
         dev:function(index){
-            this.list.splice(index,1)
+            this.list.splice(index,1);
+            this.selectArr = [];
         },
         searchUp:function(){
            var _this = this;
@@ -254,6 +284,66 @@ export default {
         },
         mouseNum:function(){
           this.$refs.mouseOver.focus();
+        },
+        reduce:function(){
+          var _this = this;
+           _this.user.age++;
+        },
+        increase:function(){
+          var _this = this;
+          if(_this.user.age >0){
+            _this.user.age--;
+          }
+        },
+        submit:function(){ 
+          var _this = this;
+          var Pname = this.user.name;
+          var Psex = this.user.sex;
+          var Page = this.user.age;
+          var Pdate = this.user.date;
+          var Padd = this.user.add;
+          var Gender = '';
+          var format = '';
+          var userJson = [];
+/*姓名*/
+          if(_this.user.name == ""){
+             alert("姓名错误")
+             return;
+          } 
+/*性别*/ 
+
+          if(Psex == '0'){
+             Gender = '男';
+          }
+          if(Psex == '1'){
+             Gender = '女';
+          }
+
+/*年龄*/                 
+/* 日期 */
+          if(Pdate != ''){
+            var year = Pdate.getFullYear();
+            var mouth = Pdate.getMonth() + 1;
+            var day = Pdate.getDate();
+            var format = year + '-' + mouth + '-' + day;
+          }
+
+/*地址*/  
+           //userJson += {name:Pname,sex:Gender,age:Page,date:format,addr:Padd}
+           //console.log(JSON.stringify(userJson))
+           console.log(this.searchData)
+            
+
+/*  
+_this.users.unshift(this.user);        
+          _this.searchData = _this.users;          
+          _this.list = _this.searchData.filter(function(data,index) {
+                       if(index>=(_this.num-1)*_this.pageNum&&index<_this.pageNum*_this.num){
+                           return data;
+                       }
+                  });
+           _this.page =Math.ceil(this.searchData.length/this.pageNum);
+*/           
         }
      },
      watch:{
@@ -270,16 +360,13 @@ export default {
             if(e.length==0){
                 this.disabled = true
             }
-          }
-          
+          }   
      },
      computed: {
           
      }
 }
-
 /*
-
 var npmlist = [];
           var nmblen = Math.ceil(this.users.length/5) + 1;
 
@@ -294,6 +381,7 @@ var npmlist = [];
 </script>
 
 <style scoped>
+label{outline:none}
 .label{margin:0;}
 .main_all p{width: 100%; margin:0; line-height: 25px; display: inline-block}
 
@@ -320,7 +408,7 @@ var npmlist = [];
 
 .form-group{min-height: 34px;}
 .form-group label{line-height: 34px; text-align: right;}
-.form-group label span{color: red;}
+.form-group label em{color: red;}
 
 
 .radio-primary{float: left; height: 34px; line-height: 34px; }
@@ -342,6 +430,8 @@ var npmlist = [];
 .age_style span{height: auto;border-left: 1px solid #ccc; width: 36px;line-height: 32px;top: 1px;text-align: center;color: #97a8be;cursor: pointer;z-index: 1; display: inline-block; font-size:24px;}
 .age_style span.increase{position: absolute; top:1px; right: 35px;}
 .age_style span.reduce{position: absolute; top:1px; right: 0px;}
+
+.modal-body{ padding-bottom: 0 }
 
 .col-sm-10{padding-left: 0px;}
 textarea{resize:none}

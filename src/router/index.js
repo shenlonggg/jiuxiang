@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/components/login/login'
+import NotFound from '@/components/404'
 import home from '@/components/home'
 import main from '@/components/main'
 import table from '@/components/nav1/table'
@@ -14,13 +15,19 @@ import liuyan from '@/components/nav3/liuyan'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  /*mode: 'history',*/
   routes: [
     {
       path: '/',
       name: 'login',
       component: login,
       hidden:true
+    },
+    {
+        path: '/404',
+        name: '',
+        component: NotFound,
+        hidden: true
     },
     {
       path: '/home',
@@ -65,6 +72,11 @@ export default new Router({
         component: home,
         iconimg:'glyphicon glyphicon-globe',
         name: 'Charts',
+    },
+    {
+        path: '*',
+        hidden: true,
+        redirect: { path: '/404' }
     }
   ]
 })
